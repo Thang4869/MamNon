@@ -1,0 +1,210 @@
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../models/child.dart';
+import '../widgets/profile_header.dart';
+import '../widgets/profile_form.dart';
+import '../widgets/child_card.dart';
+
+class HoSoPhuHuynhScreen extends StatefulWidget {
+  const HoSoPhuHuynhScreen({Key? key}) : super(key: key);
+
+  @override
+  _HoSoPhuHuynhScreenState createState() => _HoSoPhuHuynhScreenState();
+}
+
+class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
+    with SingleTickerProviderStateMixin {
+  bool _isEditing = false;
+  XFile? _avatarFile;
+  final _emailCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
+  final List<Child> _children = [];
+  bool _loading = true;
+
+  late final AnimationController _animController;
+  late final Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animController,
+      curve: Curves.easeInOut,
+    ));
+    _loadProfile();
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    _emailCtrl.dispose();
+    _phoneCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadProfile() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    setState(() {
+      _emailCtrl.text = 'phuhuynh@gmail.com';
+      _phoneCtrl.text = '+84 1234 5678';
+      _children.addAll([
+        Child(name: 'Bé Cam', gender: 'Nữ', attendance: 6, result: 6),
+        Child(name: 'Bé Quýt', gender: 'Nữ', attendance: 5, result: 5),
+      ]);
+      _loading = false;
+    });
+  }
+
+  void _toggleEdit() {
+    setState(() => _isEditing = !_isEditing);
+    if (_isEditing)
+      _animController.forward();
+    else
+      _animController.reverse();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final padH = width * 0.06;
+
+    return Scaffold(
+      body: SafeArea(
+        child: _loading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: padH, vertical: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Header
+                    ProfileHeader(
+                      avatarFile: _avatarFile,
+                      name: 'Nguyễn Văn Thắng',
+                      email: _emailCtrl.text,
+                      onEdit: _toggleEdit,
+                    ),
+                    const SizedBox(height: 15),
+                    // Edit form slide
+                    SlideTransition(
+                      position: _slideAnimation,
+                      child: _isEditing
+                          ? ProfileForm(
+                              isEditing: _isEditing,
+                              emailController: _emailCtrl,
+                              phoneController: _phoneCtrl,
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                    const SizedBox(height: 16),
+                    // Children grid
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: _children
+                          .map((c) => SizedBox(
+                                width: (width - padH * 2 - 12) / 2,
+                                child: ChildCard(child: c),
+                              ))
+                          .toList(),
+                    ),
+                    const SizedBox(height: 20),
+                    // Settings & Support section with expandable lists
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 2,
+                      child: Column(
+                        children: [
+                          // Yêu thích - mở form riêng
+                          ListTile(
+                            leading: const Icon(Icons.favorite),
+                            title: const Text('Yêu thích'),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () {
+                              Navigator.pushNamed(context, '/favorites');
+                            },
+                          ),
+                          const Divider(height: 1),
+                          // Trợ giúp & hỗ trợ expandable
+                          ExpansionTile(
+                            leading: const Icon(Icons.support_agent),
+                            title: const Text('Trợ giúp & hỗ trợ'),
+                            children: [
+                              ListTile(
+                                title: const Text('Trung tâm trợ giúp'),
+                                onTap: () {},
+                              ),
+                              ListTile(
+                                title: const Text('Hộp thư hỗ trợ'),
+                                onTap: () {},
+                              ),
+                              ListTile(
+                                title: const Text('Báo cáo sự cố'),
+                                onTap: () {},
+                              ),
+                              ListTile(
+                                title: const Text('Điều khoản & chính sách'),
+                                onTap: () {},
+                              ),
+                            ],
+                          ),
+                          const Divider(height: 1),
+                          // Cài đặt expandable
+                          ExpansionTile(
+                            leading: const Icon(Icons.settings),
+                            title: const Text('Cài đặt'),
+                            children: [
+                              ListTile(
+                                title: const Text('Mật khẩu và bảo mật'),
+                                onTap: () {},
+                              ),
+                              ListTile(
+                                title: const Text('Thông báo'),
+                                onTap: () {},
+                              ),
+                              ListTile(
+                                title: const Text('Ngôn ngữ'),
+                                onTap: () {},
+                              ),
+                              ListTile(
+                                title: const Text('Giao diện'),
+                                onTap: () {},
+                              ),
+                              ListTile(
+                                title: const Text('Nhật ký hoạt động'),
+                                onTap: () {},
+                              ),
+                            ],
+                          ),
+                          const Divider(height: 1),
+                          // Đăng xuất
+                          ListTile(
+                            leading: const Icon(Icons.logout, color: Colors.red),
+                            title: const Text(
+                              'Đăng xuất',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onTap: () {
+                              // TODO: Handle logout
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+      ),
+    );
+  }
+}
