@@ -6,48 +6,79 @@ class DanhSachMonHocWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subjects = [
-      {'name': 'Toán', 'image': 'https://i.imgur.com/KTC6cUR.png'},
-      {'name': 'Âm nhạc', 'image': 'https://i.imgur.com/l49aYSn.png'},
-      {'name': 'Mỹ thuật', 'image': 'https://i.imgur.com/T6CtFzR.png'},
-      {'name': 'Thể dục', 'image': 'https://i.imgur.com/y3X7XkF.png'},
+      {'name': 'Tiếng việt', 'image': 'icons/iconTV.png','type': 'asset'},
+      {'name': 'Âm nhạc', 'image': 'icons/iconHH.png','type': 'asset'},
+      {'name': 'Mỹ thuật', 'image': 'icons/iconHH.png','type': 'asset'},
+      {'name': 'Thể dục', 'image': 'icons/iconHH.png','type': 'asset'},
     ];
 
-    return GridView.builder(
-      itemCount: subjects.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3 / 2.6,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+    return SizedBox(
+      height: 230,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: subjects.length,
+        padding: const EdgeInsets.only(right: 16),
+        itemBuilder: (context, index) {
+          final subject = subjects[index];
+          return Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: SizedBox(
+              width: 230,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  //event ontap category Subjects
+                  print('Tapped on ${subject['name']}');
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16)),
+                        child: Container(
+                          height: 150,
+                          width: double.infinity,
+                          color: const Color.fromARGB(133, 251, 231, 210),
+                          child: subject['type'] == 'network'
+                              ? Image.network(
+                                  subject['image']!,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.error),
+                                )
+                              : Image.asset(
+                                  subject['image']!,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.error),
+                                ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          subject['name']!,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
-      itemBuilder: (context, index) {
-        final subject = subjects[index];
-        return Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          elevation: 3,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                child: Image.network(
-                  subject['image']!,
-                  height: 100,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  subject['name']!,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

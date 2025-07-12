@@ -24,12 +24,12 @@ class ThongBaoScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Thông báo từ nhà trường'),
+        title: const Text('THÔNG BÁO',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 35,fontFamily: "Montserrat"),),
         centerTitle: true,
-        backgroundColor: Colors.orange,
+        backgroundColor: const Color(0xFFD0F5DF),
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(15),
         itemCount: thongBaoList.length,
         itemBuilder: (context, index) {
           final tb = thongBaoList[index];

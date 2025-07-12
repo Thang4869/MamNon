@@ -29,7 +29,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Trợ lý Ảo - Chatbot'),
-        backgroundColor: Colors.orange,
+        backgroundColor: const Color(0xFFD0F5DF),
         centerTitle: true,
       ),
       body: Column(
