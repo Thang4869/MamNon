@@ -40,7 +40,7 @@ class _InputBoxWidgetState extends State<InputBoxWidget> {
             ),
             const SizedBox(width: 8),
             IconButton(
-              icon: const Icon(Icons.send, color: Colors.orange),
+              icon: const Icon(Icons.send, color: Color.fromARGB(255, 0, 0, 0)),
               onPressed: _submit,
             ),
           ],
