@@ -6,10 +6,10 @@ class DanhSachMonHocWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subjects = [
-      {'name': 'Tiếng việt', 'image': 'icons/iconTV.png','type': 'asset'},
-      {'name': 'Âm nhạc', 'image': 'icons/iconHH.png','type': 'asset'},
-      {'name': 'Mỹ thuật', 'image': 'icons/iconHH.png','type': 'asset'},
-      {'name': 'Thể dục', 'image': 'icons/iconHH.png','type': 'asset'},
+      {'name': 'Tiếng việt', 'image': 'icons/TiengViet.png','type': 'asset'},
+      {'name': 'Âm nhạc', 'image': 'icons/AmNhac.png','type': 'asset'},
+      {'name': 'Sức khỏe', 'image': 'icons/SucKhoe.png','type': 'asset'},
+      {'name': 'HinhHoc', 'image': 'icons/HinhHoc.png','type': 'asset'},
     ];
 
     return SizedBox(

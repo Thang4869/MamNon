@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/thong_bao_model.dart';
-import '../../thong_bao/widgets/thong_bao_card_widget.dart';
+import '../widgets/thong_bao_card_widget.dart';
 
 class ThongBaoScreen extends StatelessWidget {
   const ThongBaoScreen({super.key});
