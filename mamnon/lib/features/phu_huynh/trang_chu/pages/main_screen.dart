@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mamnon/features/trang_chu/widgets/cate_subject_widget.dart';
-import 'package:mamnon/features/trang_chu/widgets/notification_slider_widget.dart';
+import 'package:mamnon/features/phu_huynh/trang_chu/widgets/cate_subject_widget.dart';
+import 'package:mamnon/features/phu_huynh/trang_chu/widgets/notification_slider_widget.dart';
 import '../../thong_bao/pages/thong_bao_screen.dart';
 import '../../chatbot/pages/chatbot_screen.dart';
-import '../../phu_huynh/pages/ho_so_phu_huynh_screen.dart';
+import '../../profile_phu_huynh/pages/ho_so_phu_huynh_screen.dart';
 import '../widgets/bottom_navigation_widget.dart';
 import '../widgets/header_widget.dart';
 import '../widgets/tim_kiem_widget.dart';
