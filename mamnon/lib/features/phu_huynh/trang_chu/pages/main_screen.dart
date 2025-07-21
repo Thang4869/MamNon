@@ -18,6 +18,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  late PageController _pageController;
   int _selectedIndex = 0;
 
   final List<Widget> _pages = const [
@@ -31,39 +32,63 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _selectedIndex = index;
     });
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _selectedIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     return Theme(
-    data: ThemeData(
-      scaffoldBackgroundColor: Colors.transparent, 
-      textTheme: GoogleFonts.nunitoTextTheme(Theme.of(context).textTheme),
-    ),
-    child: Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFD0F5DF), 
-            Color(0xFFFFFFFF), 
-            Color(0xFFFFFFFF), 
-            Color(0xFFFFFFFF), 
-          ],
+      data: ThemeData(
+        scaffoldBackgroundColor: Colors.transparent,
+        textTheme: GoogleFonts.nunitoTextTheme(Theme.of(context).textTheme),
+      ),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFD0F5DF),
+              Color(0xFFFFFFFF),
+              Color(0xFFFFFFFF),
+              Color(0xFFFFFFFF),
+            ],
+          ),
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            children: const [
+              TrangChuPhuHuynh(),
+              ThongBaoScreen(),
+              ChatbotScreen(),
+              HoSoPhuHuynhScreen(),
+            ],
+          ),
+          bottomNavigationBar: BottomNavigationWidget(
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+          ),
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent, 
-        body: _pages[_selectedIndex],
-        bottomNavigationBar: BottomNavigationWidget(
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-        ),
-      ),
-    ),
-  );
-}
+    );
+  }
 }
 
 class TrangChuPhuHuynh extends StatelessWidget {
@@ -72,30 +97,30 @@ class TrangChuPhuHuynh extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView( 
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            HeaderWidget(),
-            SizedBox(height: 20),
-            TimKiemWidget(),
-            SizedBox(height: 28),
-            CateSubjectWidget(),
-            SizedBox(height: 28,),
-            NotificationSliderWidget(),
-            SizedBox(height: 28,),
-            Text(
-              'Các Môn học phổ biến',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            SizedBox(height: 16),
-            DanhSachMonHocWidget(),
-          ],
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              HeaderWidget(),
+              SizedBox(height: 20),
+              TimKiemWidget(),
+              SizedBox(height: 28),
+              CateSubjectWidget(),
+              SizedBox(height: 28),
+              NotificationSliderWidget(),
+              SizedBox(height: 28),
+              Text(
+                'Các Môn học phổ biến',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 16),
+              DanhSachMonHocWidget(),
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 }
