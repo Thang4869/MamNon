@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../models/child.dart';
+import '../../../hoc_sinh/models/child.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_form.dart';
 import '../widgets/child_card.dart';
@@ -56,12 +56,21 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
       _emailCtrl.text = 'phuhuynh@gmail.com';
       _phoneCtrl.text = '+84 1234 5678';
       _children.addAll([
-        Child(name: 'Bé Cam', gender: 'Nữ', attendance: 6, result: 6),
-        Child(name: 'Bé Quýt', gender: 'Nữ', attendance: 5, result: 5),
+        Child(name: 'Xuân Mai', gender: 'Nữ',className: "Lớp lá", attendance: 2, result: 6,subjects: ['Tiếng Việt', 'Âm nhạc', 'Sức khỏe']),
+        Child(name: 'Quỳnh Anh', gender: 'Nữ',className: "Lớp lá", attendance: 5, result: 5,subjects: [ 'Âm nhạc', 'Hình học'],),
       ]);
       _loading = false;
     });
   }
+  Future<void> _pickAvatar() async {
+  final picker = ImagePicker();
+  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  if (pickedFile != null) {
+    setState(() {
+      _avatarFile = pickedFile;
+    });
+  }
+}
 
   void _toggleEdit() {
     setState(() => _isEditing = !_isEditing);
@@ -91,6 +100,7 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
                       name: 'Nguyễn Văn Thắng',
                       email: _emailCtrl.text,
                       onEdit: _toggleEdit,
+                      onAvatarTap: _pickAvatar,
                     ),
                     const SizedBox(height: 15),
                     // Edit form slide
@@ -109,12 +119,21 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
                     Wrap(
                       spacing: 12,
                       runSpacing: 12,
-                      children: _children
-                          .map((c) => SizedBox(
-                                width: (width - padH * 2 - 12) / 2,
-                                child: ChildCard(child: c),
-                              ))
-                          .toList(),
+                      children: _children.map((c) {
+                        return SizedBox(
+                          width: (width - padH * 2 - 12) / 2,
+                          child: ChildCard(
+                            child: c,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/child_detail', // hoặc thay bằng MaterialPageRoute
+                                arguments: c,
+                              );
+                            },
+                          ),
+                        );
+                      }).toList(),
                     ),
                     const SizedBox(height: 20),
                     // Settings & Support section with expandable lists
