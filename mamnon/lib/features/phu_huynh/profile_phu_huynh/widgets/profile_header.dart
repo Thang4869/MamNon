@@ -7,6 +7,7 @@ class ProfileHeader extends StatelessWidget {
   final String name;
   final String email;
   final VoidCallback onEdit;
+  final VoidCallback? onAvatarTap;
 
   const ProfileHeader({
     Key? key,
@@ -14,6 +15,7 @@ class ProfileHeader extends StatelessWidget {
     required this.name,
     required this.email,
     required this.onEdit,
+    this.onAvatarTap,
   }) : super(key: key);
 
   @override
@@ -22,7 +24,7 @@ class ProfileHeader extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
-          onTap: null,
+          onTap: onAvatarTap,
           child: CircleAvatar(
             radius: 50,
             backgroundColor: Colors.grey.shade200,
@@ -53,15 +55,15 @@ class ProfileHeader extends StatelessWidget {
         ElevatedButton(
           onPressed: onEdit,
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.black,
+            backgroundColor: const Color.fromARGB(255, 225, 121, 3),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(50),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
           ),
           child: const Text(
             'CHỈNH SỬA',
-            style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
       ],

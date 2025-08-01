@@ -9,7 +9,7 @@ class DanhSachMonHocWidget extends StatelessWidget {
       {'name': 'Tiếng việt', 'image': 'icons/TiengViet.png','type': 'asset'},
       {'name': 'Âm nhạc', 'image': 'icons/AmNhac.png','type': 'asset'},
       {'name': 'Sức khỏe', 'image': 'icons/SucKhoe.png','type': 'asset'},
-      {'name': 'HinhHoc', 'image': 'icons/HinhHoc.png','type': 'asset'},
+      {'name': 'Hình Học', 'image': 'icons/HinhHoc.png','type': 'asset'},
     ];
 
     return SizedBox(
