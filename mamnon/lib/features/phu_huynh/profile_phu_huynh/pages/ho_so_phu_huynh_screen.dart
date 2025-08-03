@@ -1,7 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'dart:convert';
 
-import '../models/child.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mamnon/features/hoc_sinh/models/child.dart';
+
 import '../widgets/profile_header.dart';
 import '../widgets/profile_form.dart';
 import '../widgets/child_card.dart';
@@ -51,17 +54,32 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
   }
 
   Future<void> _loadProfile() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+  await Future.delayed(const Duration(milliseconds: 500));
+
+  final children = await _loadChildrenFromJson();
+
+  setState(() {
+    _emailCtrl.text = 'phuhuynh@gmail.com';
+    _phoneCtrl.text = '+84 1234 5678';
+    _children.addAll(children);
+    _loading = false;
+  });
+}
+
+  Future<List<Child>> _loadChildrenFromJson() async {
+  final jsonString = await rootBundle.loadString('data/child.json');
+  final List<dynamic> jsonList = json.decode(jsonString);
+  return jsonList.map((json) => Child.fromJson(json)).toList();
+}
+  Future<void> _pickAvatar() async {
+  final picker = ImagePicker();
+  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  if (pickedFile != null) {
     setState(() {
-      _emailCtrl.text = 'phuhuynh@gmail.com';
-      _phoneCtrl.text = '+84 1234 5678';
-      _children.addAll([
-        Child(name: 'Bé Cam', gender: 'Nữ', attendance: 6, result: 6),
-        Child(name: 'Bé Quýt', gender: 'Nữ', attendance: 5, result: 5),
-      ]);
-      _loading = false;
+      _avatarFile = pickedFile;
     });
   }
+}
 
   void _toggleEdit() {
     setState(() => _isEditing = !_isEditing);
@@ -91,6 +109,7 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
                       name: 'Nguyễn Văn Thắng',
                       email: _emailCtrl.text,
                       onEdit: _toggleEdit,
+                      onAvatarTap: _pickAvatar,
                     ),
                     const SizedBox(height: 15),
                     // Edit form slide
@@ -109,12 +128,21 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
                     Wrap(
                       spacing: 12,
                       runSpacing: 12,
-                      children: _children
-                          .map((c) => SizedBox(
-                                width: (width - padH * 2 - 12) / 2,
-                                child: ChildCard(child: c),
-                              ))
-                          .toList(),
+                      children: _children.map((c) {
+                        return SizedBox(
+                          width: (width - padH * 2 - 12) / 2,
+                          child: ChildCard(
+                            child: c,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/child_detail', // hoặc thay bằng MaterialPageRoute
+                                arguments: c.toJson(),
+                              );
+                            },
+                          ),
+                        );
+                      }).toList(),
                     ),
                     const SizedBox(height: 20),
                     // Settings & Support section with expandable lists

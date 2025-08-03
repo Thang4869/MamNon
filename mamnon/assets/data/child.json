@@ -1,0 +1,16 @@
+[
+  {
+    "idHS":"HS001",
+    "name": "Xuân Mai",
+    "gender": "Nữ",
+    "className": "Lớp Lá",
+    "subjects": ["Toán", "Văn", "Âm nhạc", "Mỹ thuật"]
+  },
+  {
+    "idHS":"HS002",
+    "name": "Quỳnh Anh",
+    "gender": "Nữ",
+    "className": "Lớp Chồi",
+    "subjects": ["Toán", "Tiếng Anh", "Kể chuyện", "Vẽ"]
+  }
+]
