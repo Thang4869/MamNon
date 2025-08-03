@@ -1,7 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'dart:convert';
 
-import '../../../hoc_sinh/models/child.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mamnon/features/hoc_sinh/models/child.dart';
+
 import '../widgets/profile_header.dart';
 import '../widgets/profile_form.dart';
 import '../widgets/child_card.dart';
@@ -51,17 +54,23 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
   }
 
   Future<void> _loadProfile() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    setState(() {
-      _emailCtrl.text = 'phuhuynh@gmail.com';
-      _phoneCtrl.text = '+84 1234 5678';
-      _children.addAll([
-        Child(name: 'Xuân Mai', gender: 'Nữ',className: "Lớp lá", attendance: 2, result: 6,subjects: ['Tiếng Việt', 'Âm nhạc', 'Sức khỏe']),
-        Child(name: 'Quỳnh Anh', gender: 'Nữ',className: "Lớp lá", attendance: 5, result: 5,subjects: [ 'Âm nhạc', 'Hình học'],),
-      ]);
-      _loading = false;
-    });
-  }
+  await Future.delayed(const Duration(milliseconds: 500));
+
+  final children = await _loadChildrenFromJson();
+
+  setState(() {
+    _emailCtrl.text = 'phuhuynh@gmail.com';
+    _phoneCtrl.text = '+84 1234 5678';
+    _children.addAll(children);
+    _loading = false;
+  });
+}
+
+  Future<List<Child>> _loadChildrenFromJson() async {
+  final jsonString = await rootBundle.loadString('data/child.json');
+  final List<dynamic> jsonList = json.decode(jsonString);
+  return jsonList.map((json) => Child.fromJson(json)).toList();
+}
   Future<void> _pickAvatar() async {
   final picker = ImagePicker();
   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -128,7 +137,7 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
                               Navigator.pushNamed(
                                 context,
                                 '/child_detail', // hoặc thay bằng MaterialPageRoute
-                                arguments: c,
+                                arguments: c.toJson(),
                               );
                             },
                           ),

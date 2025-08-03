@@ -1,0 +1,14 @@
+[
+  {
+    "idLop": "L001",
+    "tenLop": "Lớp Lá",
+    "siSo": 25,
+    "maST": "ST01"
+  },
+  {
+    "idLop": "L002",
+    "tenLop": "Lớp Chồi",
+    "siSo": 20,
+    "maST": "ST02"
+  }
+]
