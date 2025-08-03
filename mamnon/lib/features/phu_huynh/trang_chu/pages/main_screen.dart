@@ -74,12 +74,7 @@ class _MainScreenState extends State<MainScreen> {
                 _selectedIndex = index;
               });
             },
-            children: const [
-              TrangChuPhuHuynh(),
-              ThongBaoScreen(),
-              ChatbotScreen(),
-              HoSoPhuHuynhScreen(),
-            ],
+            children: _pages,
           ),
           bottomNavigationBar: BottomNavigationWidget(
             currentIndex: _selectedIndex,
@@ -91,8 +86,15 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-class TrangChuPhuHuynh extends StatelessWidget {
+class TrangChuPhuHuynh extends StatefulWidget {
   const TrangChuPhuHuynh({super.key});
+
+  @override
+  State<TrangChuPhuHuynh> createState() => _TrangChuPhuHuynhState();
+}
+
+class _TrangChuPhuHuynhState extends State<TrangChuPhuHuynh> {
+  bool _showAllSubjects = false;
 
   @override
   Widget build(BuildContext context) {
@@ -102,21 +104,42 @@ class TrangChuPhuHuynh extends StatelessWidget {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              HeaderWidget(),
-              SizedBox(height: 20),
-              TimKiemWidget(),
-              SizedBox(height: 28),
-              CateSubjectWidget(),
-              SizedBox(height: 28),
-              NotificationSliderWidget(),
-              SizedBox(height: 28),
-              Text(
-                'Các Môn học phổ biến',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            children: [
+              const HeaderWidget(),
+              const SizedBox(height: 20),
+              const TimKiemWidget(),
+              const SizedBox(height: 28),
+              const CateSubjectWidget(),
+              const SizedBox(height: 28),
+              const NotificationSliderWidget(),
+              const SizedBox(height: 28),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Các Môn học phổ biến',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _showAllSubjects = !_showAllSubjects;
+                      });
+                    },
+                    child: Text(
+                      _showAllSubjects ? 'Thu gọn' : 'Tất cả',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        decoration: TextDecoration.underline,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 16),
-              DanhSachMonHocWidget(),
+              const SizedBox(height: 16),
+              DanhSachMonHocWidget(showAll: _showAllSubjects),
             ],
           ),
         ),
