@@ -1,0 +1,38 @@
+[
+  {
+    "idDD": "DD001",
+    "idHS": "HS001",
+    "idLop": "L001",
+    "ngay": "2025-08-01",
+    "thang": 8,
+    "trangThai": 1,
+    "trangThaiNghi": 0
+  },
+  {
+    "idDD": "DD002",
+    "idHS": "HS002",
+    "idLop": "L002",
+    "ngay": "2025-08-01",
+    "thang": 8,
+    "trangThai": 0,
+    "trangThaiNghi": 1
+  },
+  {
+    "idDD": "DD003",
+    "idHS": "HS001",
+    "idLop": "L001",
+    "ngay": "2025-08-02",
+    "thang": 8,
+    "trangThai": 1,
+    "trangThaiNghi": 0
+  },
+  {
+    "idDD": "DD004",
+    "idHS": "HS002",
+    "idLop": "L001",
+    "ngay": "2025-08-02",
+    "thang": 8,
+    "trangThai": 0,
+    "trangThaiNghi": 1
+  }
+]

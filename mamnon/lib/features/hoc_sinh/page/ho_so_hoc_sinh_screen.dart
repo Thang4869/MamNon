@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mamnon/features/hoc_sinh/models/hocsinh_lop.dart';
 import 'package:mamnon/features/hoc_sinh/page/so_buoi_vang_screen.dart';
+import 'package:mamnon/features/hoc_sinh/page/tien_do_hoc_tap_screen.dart';
 import 'package:mamnon/features/hoc_sinh/widget/function_card.dart';
-import 'package:mamnon/features/hoc_sinh/widget/info_tile.dart';
 import '../models/child.dart';
+import '../models/diemdanh.dart';
+import '../data_loader/data_loader.dart';
 
 class HoSoHocSinhScreen extends StatefulWidget {
   const HoSoHocSinhScreen({super.key});
@@ -15,6 +18,28 @@ class HoSoHocSinhScreen extends StatefulWidget {
 
 class _HoSoHocSinhScreenState extends State<HoSoHocSinhScreen> {
   File? _imageFile;
+  List<DiemDanh> diemDanhList = [];
+  List<HocSinhLop> hocSinhLopList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDiemDanhData();
+    _loadHocSinhLopData();
+  }
+
+  Future<void> _loadDiemDanhData() async {
+    final data = await JsonLoader.loadDiemDanh();
+    setState(() {
+      diemDanhList = data;
+    });
+  }
+  Future<void> _loadHocSinhLopData() async {
+  final data = await JsonLoader.loadHocSinhLop(); 
+  setState(() {
+    hocSinhLopList = data;
+  });
+}
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -27,11 +52,12 @@ class _HoSoHocSinhScreenState extends State<HoSoHocSinhScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Child child = ModalRoute.of(context)!.settings.arguments as Child;
+    final Map<String, dynamic> json = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final Child child = Child.fromJson(json);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(child.name,style: TextStyle(fontWeight: FontWeight.bold),),
+        title: Text(child.name, style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFFD0F5DF),
         elevation: 0,
       ),
@@ -51,7 +77,6 @@ class _HoSoHocSinhScreenState extends State<HoSoHocSinhScreen> {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            // Avatar có thể thay đổi
             GestureDetector(
               onTap: _pickImage,
               child: CircleAvatar(
@@ -63,7 +88,7 @@ class _HoSoHocSinhScreenState extends State<HoSoHocSinhScreen> {
                   alignment: Alignment.bottomRight,
                   child: Container(
                     padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
                     ),
@@ -73,14 +98,9 @@ class _HoSoHocSinhScreenState extends State<HoSoHocSinhScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            Text(
-              '@${child.name.toLowerCase().replaceAll(" ", "")}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              '${child.className}',
-              style: const TextStyle(color: Colors.grey),
-            ),
+            Text('@${child.name.toLowerCase().replaceAll(" ", "")}',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text(child.className, style: const TextStyle(color: Colors.grey)),
             const SizedBox(height: 16),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -93,7 +113,6 @@ class _HoSoHocSinhScreenState extends State<HoSoHocSinhScreen> {
               ),
             ),
             const SizedBox(height: 16),
-
             ListTile(
               leading: const Icon(Icons.person, color: Colors.deepOrange),
               title: const Text('Tên', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -127,7 +146,10 @@ class _HoSoHocSinhScreenState extends State<HoSoHocSinhScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SoBuoiVangScreen(child: child),
+                            builder: (context) => SoBuoiVangScreen(
+                              child: child,
+                              allDiemDanh: diemDanhList,
+                            ),
                           ),
                         );
                       },
@@ -139,8 +161,15 @@ class _HoSoHocSinhScreenState extends State<HoSoHocSinhScreen> {
                       icon: Icons.bar_chart,
                       title: 'Tiến độ học tập',
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Chuyển đến Báo cáo tiến độ học tập')),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TienDoHocTapScreen(
+                              child: child,
+                              diemDanhList: diemDanhList,
+                              hocSinhLopList: hocSinhLopList,
+                            ),
+                          ),
                         );
                       },
                     ),

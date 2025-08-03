@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../hoc_sinh/models/child.dart';
+import 'package:mamnon/features/hoc_sinh/models/child.dart';
 
 class ChildCard extends StatelessWidget {
   final Child child;
@@ -30,7 +30,6 @@ class ChildCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text('Giới tính: ${child.gender}'),
-                  Text('Đi học: ${child.attendance}/${child.result}'),
                 ],
               ),
               const Icon(Icons.chevron_right),
