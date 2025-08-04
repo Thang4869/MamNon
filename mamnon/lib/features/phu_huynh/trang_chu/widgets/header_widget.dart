@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class HeaderWidget extends StatelessWidget {
-  const HeaderWidget({super.key});
+  final String name;  // Thêm tham số 'name'
+
+  const HeaderWidget({super.key, required this.name});  // Nhận tham số 'name' trong constructor
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      'Xin chào, Phụ huynh!',
+    return Text(
+      'Xin chào, $name!',  // Hiển thị tên phụ huynh
       style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
     );
   }

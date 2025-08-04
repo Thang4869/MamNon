@@ -54,6 +54,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 }
 
 class PhHuynh extends StatelessWidget {
+  const PhHuynh({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(

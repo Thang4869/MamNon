@@ -10,7 +10,7 @@ import '../widgets/profile_form.dart';
 import '../widgets/child_card.dart';
 
 class HoSoPhuHuynhScreen extends StatefulWidget {
-  const HoSoPhuHuynhScreen({Key? key}) : super(key: key);
+  const HoSoPhuHuynhScreen({super.key});
 
   @override
   _HoSoPhuHuynhScreenState createState() => _HoSoPhuHuynhScreenState();
@@ -83,10 +83,11 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
 
   void _toggleEdit() {
     setState(() => _isEditing = !_isEditing);
-    if (_isEditing)
+    if (_isEditing) {
       _animController.forward();
-    else
+    } else {
       _animController.reverse();
+    }
   }
 
   @override

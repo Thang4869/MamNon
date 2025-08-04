@@ -11,7 +11,9 @@ import '../widgets/tim_kiem_widget.dart';
 import '../widgets/danh_sach_mon_hoc_widget.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final Map userInfo;  // Nhận tham số userInfo
+
+  const MainScreen({super.key, required this.userInfo});  // Truyền tham số vào constructor
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -21,12 +23,22 @@ class _MainScreenState extends State<MainScreen> {
   late PageController _pageController;
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
-    TrangChuPhuHuynh(),
-    ThongBaoScreen(),
-    ChatbotScreen(),
-    HoSoPhuHuynhScreen(),
-  ];
+  // Khởi tạo danh sách các trang, nhưng không sử dụng widget.userInfo ở đây
+  late List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _selectedIndex);
+
+    // Khởi tạo _pages sau khi widget đã được khởi tạo
+    _pages = [
+      TrangChuPhuHuynh(userInfo: widget.userInfo),  // Truyền userInfo đúng cách
+      ThongBaoScreen(),
+      ChatbotScreen(),
+      HoSoPhuHuynhScreen(),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -40,13 +52,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(initialPage: _selectedIndex);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    print('User Info: ${widget.userInfo}');  // In ra userInfo để kiểm tra
     return Theme(
       data: ThemeData(
         scaffoldBackgroundColor: Colors.transparent,
@@ -74,7 +81,7 @@ class _MainScreenState extends State<MainScreen> {
                 _selectedIndex = index;
               });
             },
-            children: _pages,
+            children: _pages,  // Truyền đúng _pages
           ),
           bottomNavigationBar: BottomNavigationWidget(
             currentIndex: _selectedIndex,
@@ -86,9 +93,13 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-class TrangChuPhuHuynh extends StatefulWidget {
-  const TrangChuPhuHuynh({super.key});
 
+
+class TrangChuPhuHuynh extends StatefulWidget {
+  final Map userInfo;  // Tham số userInfo
+
+  const TrangChuPhuHuynh({super.key, required this.userInfo});  // Nhận tham số vào constructor
+  
   @override
   State<TrangChuPhuHuynh> createState() => _TrangChuPhuHuynhState();
 }
@@ -98,6 +109,8 @@ class _TrangChuPhuHuynhState extends State<TrangChuPhuHuynh> {
 
   @override
   Widget build(BuildContext context) {
+    print('User Info in TrangChuPhuHuynh: ${widget.userInfo}');
+    print('Tên phụ huynh: ${widget.userInfo['hoTen']}');
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -105,7 +118,7 @@ class _TrangChuPhuHuynhState extends State<TrangChuPhuHuynh> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const HeaderWidget(),
+              HeaderWidget(name: widget.userInfo['hoTen']?.toString().trim() ?? 'Không có tên'),
               const SizedBox(height: 20),
               const TimKiemWidget(),
               const SizedBox(height: 28),

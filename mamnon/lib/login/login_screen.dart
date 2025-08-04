@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mamnon/features/phu_huynh/trang_chu/pages/main_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'package:mamnon/login/otp_screen.dart';
+
+// Tạo controller cho Email và Mật khẩu
+final TextEditingController _emailController = TextEditingController();
+final TextEditingController _passwordController = TextEditingController();
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,6 +19,24 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
 
+  // Hàm gọi API để kiểm tra đăng nhập
+  Future<Map?> login(String email, String password) async {
+    final response = await http.get(Uri.parse('http://localhost:5005/api/PhuHuynhs'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      print(data); 
+      for (var user in data) {
+        if (user['email'].trim() == email.trim() && user['matKhau'].trim() == password.trim()) {
+          return user;  // Trả về thông tin người dùng khi đăng nhập thành công
+        }
+      }
+      return null;  // Trả về null nếu không tìm thấy email hoặc mật khẩu không khớp
+    } else {
+      throw Exception('Lỗi kết nối đến máy chủ');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -22,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
         height: size.height,
         child: Stack(
           children: [
-            // Layer 1: Ảnh nền
+            // Ảnh nền
             Positioned(
               top: 0,
               left: 0,
@@ -34,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
 
-            // Layer 2: Nền vàng
+            // Nền vàng
             Positioned(
               top: size.height * 0.45,
               left: 0,
@@ -51,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
 
-            // Layer 3: Nội dung
+            // Nội dung
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -89,10 +114,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: TextField(
-                          decoration: InputDecoration(
+                          controller: _emailController,
+                          decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Email',
                             hintStyle: TextStyle(
@@ -127,6 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             // TextField chiếm phần lớn không gian
                             Expanded(
                               child: TextField(
+                                controller: _passwordController,
                                 obscureText: _obscurePassword,
                                 decoration: const InputDecoration(
                                   border: InputBorder.none,
@@ -160,10 +187,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 child: AnimatedAlign(
                                   duration: const Duration(milliseconds: 300),
-                                  alignment:
-                                      _obscurePassword
-                                          ? Alignment.centerLeft
-                                          : Alignment.centerRight,
+                                  alignment: _obscurePassword
+                                      ? Alignment.centerLeft
+                                      : Alignment.centerRight,
                                   child: Container(
                                     width: 16,
                                     height: 16,
@@ -188,10 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Nút quên mật khẩu
                         TextButton(
                           onPressed: () {
-                            // Điều hướng tới trang quên mật khẩu
-                            Navigator.of(
-                              context,
-                            ).push(_createRoute(const OtpScreen()));
+                            Navigator.of(context).push(_createRoute(const OtpScreen()));
                           },
                           child: const Text(
                             'Quên mật khẩu?',
@@ -204,17 +227,28 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
+
                         // Nút đăng nhập
                         SizedBox(
                           width: 200,
                           height: 50,
                           child: ElevatedButton(
-                            onPressed: () {
-                              // Xử lý đăng nhập ở đây
-                              Navigator.of(
-                                context,
-                              ).push(_createRoute(const MainScreen()));
+                            onPressed: () async {
+                              final email = _emailController.text;
+                              final password = _passwordController.text;
+
+                              final user = await login(email, password);
+
+                              if (user != null) {
+                                  Navigator.of(context).push(
+                                    _createRoute(MainScreen(userInfo: user)),  // Truyền userInfo vào MainScreen
+                                  );
+                                } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Email hoặc mật khẩu không đúng')),
+                                );
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF53B175),
@@ -245,20 +279,20 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
 
-// quản lý chuyển trang
-Route _createRoute(Widget page) {
-  return PageRouteBuilder(
-    transitionDuration: const Duration(milliseconds: 700),
-    pageBuilder: (context, animation, secondaryAnimation) => page,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0); // từ bên phải
-      const end = Offset.zero;
-      const curve = Curves.easeInOut;
+  // Quản lý chuyển trang
+  Route _createRoute(Widget page) {
+    return PageRouteBuilder(
+      transitionDuration: const Duration(milliseconds: 700),
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0); // từ bên phải
+        const end = Offset.zero;
+        const curve = Curves.easeInOut;
 
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(position: animation.drive(tween), child: child);
-    },
-  );
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        return SlideTransition(position: animation.drive(tween), child: child);
+      },
+    );
+  }
 }
