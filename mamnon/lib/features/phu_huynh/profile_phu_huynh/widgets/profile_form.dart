@@ -6,11 +6,11 @@ class ProfileForm extends StatelessWidget {
   final TextEditingController phoneController;
 
   const ProfileForm({
-    Key? key,
+    super.key,
     required this.isEditing,
     required this.emailController,
     required this.phoneController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -25,6 +25,9 @@ class _OtpScreenState extends State<OtpScreen> {
 
     final response = await http.post(
       Uri.parse('http://10.0.2.2:5005/api/ForgetPassApi/send-otp'),
+      //'http://192.168.68.140:5005/api/ForgetPassApi/send-otp' Thắng
+      //'http://10.0.2.2:5005/api/ForgetPassApi/send-otp' Thuận
+      //'http://localhost:5005/api/ForgetPassApi/send-otp'
       headers: {'Content-Type': 'application/json'},
       body: json.encode(email),
     );
@@ -49,7 +52,10 @@ class _OtpScreenState extends State<OtpScreen> {
     }
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:5005/api/ForgetPassApi/verify-otp'),
+      Uri.parse('http://10.0.2.2:5005/api/ForgetPassApi/send-otp'),
+      //'http://192.168.68.140:5005/api/ForgetPassApi/send-otp'
+      //'http://10.0.2.2:5005/api/ForgetPassApi/send-otp'
+      //'http://localhost:5005/api/ForgetPassApi/send-otp'
       headers: {'Content-Type': 'application/json'},
       body: json.encode({"email": email, "otp": otp}),
     );

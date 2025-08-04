@@ -10,13 +10,13 @@ class ProfileHeader extends StatelessWidget {
   final VoidCallback? onAvatarTap;
 
   const ProfileHeader({
-    Key? key,
+    super.key,
     this.avatarFile,
     required this.name,
     required this.email,
     required this.onEdit,
     this.onAvatarTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

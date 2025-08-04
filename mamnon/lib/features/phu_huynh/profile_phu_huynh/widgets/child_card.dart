@@ -5,7 +5,7 @@ class ChildCard extends StatelessWidget {
   final Child child;
   final VoidCallback? onTap;
 
-  const ChildCard({Key? key, required this.child, this.onTap}) : super(key: key);
+  const ChildCard({super.key, required this.child, this.onTap});
 
   @override
   Widget build(BuildContext context) {

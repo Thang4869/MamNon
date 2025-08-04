@@ -4,7 +4,8 @@ class NotificationSliderWidget extends StatefulWidget {
   const NotificationSliderWidget({super.key});
 
   @override
-  State<NotificationSliderWidget> createState() => _NotificationSliderWidgetState();
+  State<NotificationSliderWidget> createState() =>
+      _NotificationSliderWidgetState();
 }
 
 class _NotificationSliderWidgetState extends State<NotificationSliderWidget> {
@@ -34,7 +35,6 @@ class _NotificationSliderWidgetState extends State<NotificationSliderWidget> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: GestureDetector(
                   onTap: () {
-                    //event ontap Notification page
                     print("Tapped notification ${index + 1}");
                   },
                   child: ClipRRect(
@@ -43,6 +43,16 @@ class _NotificationSliderWidgetState extends State<NotificationSliderWidget> {
                       images[index],
                       fit: BoxFit.cover,
                       width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[300],
+                          alignment: Alignment.center,
+                          child: const Text(
+                            "Ảnh lỗi",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -60,9 +70,10 @@ class _NotificationSliderWidgetState extends State<NotificationSliderWidget> {
               margin: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _currentPage == index
-                    ? Colors.black
-                    : Colors.grey.withOpacity(0.4),
+                color:
+                    _currentPage == index
+                        ? Colors.black
+                        : Colors.grey.withOpacity(0.4),
               ),
             );
           }),
