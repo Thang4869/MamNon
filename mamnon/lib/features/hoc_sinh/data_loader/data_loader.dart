@@ -15,10 +15,10 @@ class JsonLoader {
     return jsonList.map((e) => fromJson(e)).toList();
   }
 
-  static Future<List<Child>> loadChildren() => loadList('data/child.json', Child.fromJson);
-  static Future<List<DiemDanh>> loadDiemDanh() => loadList('data/diemdanh.json', DiemDanh.fromJson);
-  static Future<List<HocSinhLop>> loadHocSinhLop() => loadList('data/hocsinh_lop.json', HocSinhLop.fromJson);
-  static Future<List<Lop>> loadLop() => loadList('data/lop.json', Lop.fromJson);
-  static Future<List<MonHoc>> loadMonHoc() => loadList('data/monhoc.json', MonHoc.fromJson);
-  static Future<List<TKB>> loadTKB() => loadList('data/tkb.json', TKB.fromJson);
+  static Future<List<Child>> loadChildren() => loadList('assets/data/child.json', Child.fromJson);
+  static Future<List<DiemDanh>> loadDiemDanh() => loadList('assets/data/diemdanh.json', DiemDanh.fromJson);
+  static Future<List<HocSinhLop>> loadHocSinhLop() => loadList('assets/data/hocsinh_lop.json', HocSinhLop.fromJson);
+  static Future<List<Lop>> loadLop() => loadList('assets/data/lop.json', Lop.fromJson);
+  static Future<List<MonHoc>> loadMonHoc() => loadList('assets/data/monhoc.json', MonHoc.fromJson);
+  static Future<List<TKB>> loadTKB() => loadList('assets/data/tkb.json', TKB.fromJson);
 }

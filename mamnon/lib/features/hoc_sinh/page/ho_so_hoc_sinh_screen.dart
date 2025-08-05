@@ -83,7 +83,7 @@ class _HoSoHocSinhScreenState extends State<HoSoHocSinhScreen> {
                 radius: 50,
                 backgroundImage: _imageFile != null
                     ? FileImage(_imageFile!)
-                    : const AssetImage('images/avatar.jpg') as ImageProvider,
+                    : const AssetImage('assets/images/avatar.jpg') as ImageProvider,
                 child: Align(
                   alignment: Alignment.bottomRight,
                   child: Container(
@@ -141,7 +141,7 @@ class _HoSoHocSinhScreenState extends State<HoSoHocSinhScreen> {
                   Expanded(
                     child: FunctionCard(
                       icon: Icons.local_activity,
-                      title: 'Số buổi vắng',
+                      title: 'Buổi vắng',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -159,7 +159,7 @@ class _HoSoHocSinhScreenState extends State<HoSoHocSinhScreen> {
                   Expanded(
                     child: FunctionCard(
                       icon: Icons.bar_chart,
-                      title: 'Tiến độ học tập',
+                      title: 'Tiến độ học',
                       onTap: () {
                         Navigator.push(
                           context,
