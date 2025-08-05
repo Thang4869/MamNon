@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../trang_chu/pages/chi_tiet_mon_hoc_screen.dart';
 
 class DanhSachMonHocWidget extends StatelessWidget {
   final bool showAll;
@@ -7,13 +8,50 @@ class DanhSachMonHocWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subjects = [
-      {'name': 'Tiếng việt', 'image': 'icons/TiengViet.png', 'type': 'asset'},
-      {'name': 'Âm nhạc', 'image': 'icons/AmNhac.png', 'type': 'asset'},
-      {'name': 'Sức khỏe', 'image': 'icons/SucKhoe.png', 'type': 'asset'},
-      {'name': 'Hình Học', 'image': 'icons/HinhHoc.png', 'type': 'asset'},
+      {
+        'name': 'Tiếng Việt',
+        'image': 'icons/TiengViet.png',
+        'type': 'asset',
+        'moTa': 'Phát triển kỹ năng đọc viết và từ vựng',
+        'thoiHan': '3 tháng'
+      },
+      {
+        'name': 'Âm Nhạc',
+        'image': 'icons/AmNhac.png',
+        'type': 'asset',
+        'moTa': 'Khơi dậy cảm xúc và khả năng cảm thụ âm nhạc',
+        'thoiHan': '2 tháng'
+      },
+      {
+        'name': 'Sức Khỏe',
+        'image': 'icons/SucKhoe.png',
+        'type': 'asset',
+        'moTa': 'Giáo dục về thể chất và sức khỏe học đường',
+        'thoiHan': '1.5 tháng'
+      },
+      {
+        'name': 'Hình Học',
+        'image': 'icons/HinhHoc.png',
+        'type': 'asset',
+        'moTa': 'Nhận biết hình dạng và phát triển tư duy không gian',
+        'thoiHan': '2 tháng'
+      },
     ];
 
     final displaySubjects = showAll ? subjects : subjects.take(2).toList();
+
+    void _navigateToDetail(BuildContext context, Map<String, String> subject) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChiTietMonHocScreen(
+            tenMon: subject['name']!,
+            moTa: subject['moTa']!,
+            thoiHan: subject['thoiHan']!,
+          ),
+        ),
+      );
+    }
 
     if (showAll) {
       return Column(
@@ -24,9 +62,7 @@ class DanhSachMonHocWidget extends StatelessWidget {
               width: double.infinity,
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
-                onTap: () {
-                  print('Tapped on ${subject['name']}');
-                },
+                onTap: () => _navigateToDetail(context, subject),
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -36,25 +72,14 @@ class DanhSachMonHocWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ClipRRect(
-                        borderRadius:
-                            const BorderRadius.vertical(top: Radius.circular(16)),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                         child: Container(
                           height: 150,
                           width: double.infinity,
                           color: const Color.fromARGB(133, 251, 231, 210),
                           child: subject['type'] == 'network'
-                              ? Image.network(
-                                  subject['image']!,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.error),
-                                )
-                              : Image.asset(
-                                  subject['image']!,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.error),
-                                ),
+                              ? Image.network(subject['image']!, fit: BoxFit.contain)
+                              : Image.asset(subject['image']!, fit: BoxFit.contain),
                         ),
                       ),
                       Padding(
@@ -76,12 +101,10 @@ class DanhSachMonHocWidget extends StatelessWidget {
         }).toList(),
       );
     } else {
-
       return SizedBox(
         height: 230,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          physics: const AlwaysScrollableScrollPhysics(),
           itemCount: displaySubjects.length,
           padding: const EdgeInsets.only(right: 16),
           itemBuilder: (context, index) {
@@ -92,9 +115,7 @@ class DanhSachMonHocWidget extends StatelessWidget {
                 width: 230,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
-                  onTap: () {
-                    print('Tapped on ${subject['name']}');
-                  },
+                  onTap: () => _navigateToDetail(context, subject),
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -104,25 +125,14 @@ class DanhSachMonHocWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(16)),
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                           child: Container(
                             height: 150,
                             width: double.infinity,
                             color: const Color.fromARGB(133, 251, 231, 210),
                             child: subject['type'] == 'network'
-                                ? Image.network(
-                                    subject['image']!,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                        const Icon(Icons.error),
-                                  )
-                                : Image.asset(
-                                    subject['image']!,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                        const Icon(Icons.error),
-                                  ),
+                                ? Image.network(subject['image']!, fit: BoxFit.contain)
+                                : Image.asset(subject['image']!, fit: BoxFit.contain),
                           ),
                         ),
                         Padding(
