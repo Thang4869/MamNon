@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:google_generative_ai/google_generative_ai.dart' as genai;  // Thêm prefix 'genai'
+import 'package:google_generative_ai/google_generative_ai.dart' as genai;
 import '../models/message_model.dart';
 import '../widgets/message_bubble_widget.dart';
 import '../widgets/input_box_widget.dart';
