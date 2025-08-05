@@ -10,7 +10,9 @@ import '../widgets/profile_form.dart';
 import '../widgets/child_card.dart';
 
 class HoSoPhuHuynhScreen extends StatefulWidget {
-  const HoSoPhuHuynhScreen({super.key});
+  final Map userInfo;  // Nhận tham số userInfo
+
+  const HoSoPhuHuynhScreen({super.key, required this.userInfo});  // Thêm tham số vào constructor
 
   @override
   _HoSoPhuHuynhScreenState createState() => _HoSoPhuHuynhScreenState();
@@ -67,19 +69,20 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
 }
 
   Future<List<Child>> _loadChildrenFromJson() async {
-  final jsonString = await rootBundle.loadString('data/child.json');
-  final List<dynamic> jsonList = json.decode(jsonString);
-  return jsonList.map((json) => Child.fromJson(json)).toList();
-}
-  Future<void> _pickAvatar() async {
-  final picker = ImagePicker();
-  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-  if (pickedFile != null) {
-    setState(() {
-      _avatarFile = pickedFile;
-    });
+    final jsonString = await rootBundle.loadString('data/child.json');
+    final List<dynamic> jsonList = json.decode(jsonString);
+    return jsonList.map((json) => Child.fromJson(json)).toList();
   }
-}
+
+  Future<void> _pickAvatar() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _avatarFile = pickedFile;
+      });
+    }
+  }
 
   void _toggleEdit() {
     setState(() => _isEditing = !_isEditing);
@@ -107,7 +110,7 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
                     // Header
                     ProfileHeader(
                       avatarFile: _avatarFile,
-                      name: 'Nguyễn Văn Thắng',
+                      name: widget.userInfo['hoTen'],  // Hiển thị tên phụ huynh từ userInfo
                       email: _emailCtrl.text,
                       onEdit: _toggleEdit,
                       onAvatarTap: _pickAvatar,

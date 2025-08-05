@@ -61,71 +61,71 @@ class BottomNavigationWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(icons.length, (index) {
                     return Expanded(
                       child: GestureDetector(
                         onTap: () => onTap(index),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (index == 1)
-                              Stack(
-                                clipBehavior: Clip.none,
-                                children: [
-                                  Icon(
-                                    icons[index],
-                                    color:
-                                        currentIndex == index
-                                            ? Colors.black
-                                            : Colors.grey[600],
-                                  ),
-                                  Positioned(
-                                    top: -2,
-                                    right: -2,
-                                    child: Container(
-                                      width: 12,
-                                      height: 12,
-                                      decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        shape: BoxShape.circle,
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.black38,
-                                            blurRadius: 4,
-                                          ),
-                                        ],
+                        child: SizedBox(  // Giới hạn chiều cao cố định
+                          height: 56,  // Đảm bảo chiều cao không vượt quá giới hạn
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,  // Giới hạn chiều cao tự nhiên
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (index == 1)
+                                Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    Icon(
+                                      icons[index],
+                                      color: currentIndex == index
+                                          ? Colors.black
+                                          : Colors.grey[600],
+                                    ),
+                                    Positioned(
+                                      top: -2,
+                                      right: -2,
+                                      child: Container(
+                                        width: 12,
+                                        height: 12,
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black38,
+                                              blurRadius: 4,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              )
-                            else
-                              Icon(
-                                icons[index],
-                                color:
-                                    currentIndex == index
-                                        ? Colors.black
-                                        : Colors.grey[600],
+                                  ],
+                                )
+                              else
+                                Icon(
+                                  icons[index],
+                                  color: currentIndex == index
+                                      ? Colors.black
+                                      : Colors.grey[600],
+                                ),
+                              const SizedBox(height: 4),
+                              Text(
+                                labels[index],
+                                style: TextStyle(
+                                  fontSize: currentIndex == index ? 14 : 12,
+                                  fontWeight: currentIndex == index
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: currentIndex == index
+                                      ? Colors.black
+                                      : Colors.grey[600],
+                                ),
+                                overflow: TextOverflow.ellipsis,  // Ngăn text dài gây overflow
                               ),
-                            const SizedBox(height: 4),
-                            Text(
-                              labels[index],
-                              style: TextStyle(
-                                fontSize: currentIndex == index ? 14 : 12,
-                                fontWeight:
-                                    currentIndex == index
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                color:
-                                    currentIndex == index
-                                        ? Colors.black
-                                        : Colors.grey[600],
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
