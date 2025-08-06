@@ -1,33 +1,31 @@
 class ThongBaoModel {
-  final String title;
-  final String content;
-  final String date;
-  final bool isPinned;
+  final int idTitle;
+  final String idPh;
+  final String? title;
+  final String? noiDung;
+  final String? tepDinhKem;
+  final DateTime ngayTao;
   bool isRead;
 
   ThongBaoModel({
-    required this.title,
-    required this.content,
-    required this.date,
-    required this.isPinned,
-    this.isRead = false, 
+    required this.idTitle,
+    required this.idPh,
+    this.title,
+    this.noiDung,
+    this.tepDinhKem,
+    required this.ngayTao,
+    required this.isRead,
   });
 
-  factory ThongBaoModel.fromMap(Map<String, dynamic> map) {
+  factory ThongBaoModel.fromJson(Map<String, dynamic> json) {
     return ThongBaoModel(
-      title: map['title'] ?? '',
-      content: map['content'] ?? '',
-      date: map['date'] ?? '',
-      isPinned: map['isPinned'] ?? false,
+      idTitle: json['idTitle'],
+      idPh: json['idPH'],
+      title: json['title'],
+      noiDung: json['noiDung'],
+      tepDinhKem: json['tepDinhKem'],
+      ngayTao: DateTime.parse(json['ngayTao']),
+      isRead: json['isRead'],
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'title': title,
-      'content': content,
-      'date': date,
-      'isPinned': isPinned,
-    };
   }
 }

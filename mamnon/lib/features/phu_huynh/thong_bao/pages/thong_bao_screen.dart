@@ -1,121 +1,130 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import '../models/thong_bao_model.dart';
-import '../widgets/thong_bao_card_widget.dart';
+import 'thong_bao_detail_screen.dart';
+import '../widgets/thong_bao_card_widget.dart'; // CHỖ NÀY: Import lại widget giao diện cũ
 
 class ThongBaoScreen extends StatefulWidget {
-  const ThongBaoScreen({super.key});
+  final String idPh;
+
+  const ThongBaoScreen({super.key, required this.idPh});
 
   @override
   State<ThongBaoScreen> createState() => _ThongBaoScreenState();
 }
 
-class _ThongBaoScreenState extends State<ThongBaoScreen> {
-  String _layGioHienTai() {
-    final now = DateTime.now();
-    final gio = now.hour;
-    final phut = now.minute.toString().padLeft(2, '0');
-    final buoi = gio >= 12 ? 'PM' : 'AM';
-    final gio12 = gio % 12 == 0 ? 12 : gio % 12;
-    return '$gio12:$phut $buoi';
-  }
-
-  late List<ThongBaoModel> dsThongBao;
+class _ThongBaoScreenState extends State<ThongBaoScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+  List<ThongBaoModel> dsThongBao = [];
 
   @override
   void initState() {
     super.initState();
-
-    dsThongBao = [
-      ThongBaoModel(
-        title: "Thông báo 1",
-        content: "Nội dung TB 1",
-        date: _layGioHienTai(),
-        isPinned: false,
-      ),
-      ThongBaoModel(
-        title: "Thông báo 2",
-        content: "Nội dung TB 2",
-        date: _layGioHienTai(),
-        isPinned: true,
-      ),
-      ThongBaoModel(
-        title: "Thông báo 3",
-        content: "Nội dung TB 3",
-        date: _layGioHienTai(),
-        isPinned: false,
-      ),
-      ThongBaoModel(
-        title: "Thông báo 4",
-        content: "Nội dung TB 4",
-        date: _layGioHienTai(),
-        isPinned: false,
-      ),
-    ];
+    fetchThongBao(widget.idPh);
   }
 
-  void _moChiTiet(ThongBaoModel tb) {
-    showDialog(
-      context: context,
-      builder: (_) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.check_circle_outline, color: Colors.black),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        tb.title,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Text(tb.content, style: const TextStyle(fontSize: 15)),
-                const SizedBox(height: 12),
-                Text(tb.date, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-              ],
-            ),
-          ),
-        );
-      },
+  Future<void> fetchThongBao(String idPh) async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:5005/api/thongbaophuhuynh/ByPhuHuynh/$idPh'),
     );
 
-    setState(() {
-      tb.isRead = true;
-    });
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      if (!mounted) return;
+      setState(() {
+        dsThongBao = data.map((e) => ThongBaoModel.fromJson(e)).toList();
+      });
+    } else {
+      print("Lỗi khi tải thông báo");
+    }
+  }
+
+  Future<void> markAsRead(int idTitle, String idPh) async {
+    final url = Uri.parse(
+      'http://10.0.2.2:5005/api/thongbaophuhuynh/mark-read?idTitle=$idTitle&idPH=$idPh',
+    );
+    final response = await http.put(url);
+
+    if (response.statusCode == 204) {
+      print("Đã cập nhật trạng thái isRead = true");
+    } else {
+      print("Cập nhật thất bại");
+    }
+  }
+
+  void _moChiTiet(ThongBaoModel tb) async {
+    if (!tb.isRead) {
+      await markAsRead(tb.idTitle, widget.idPh);
+      if (!mounted) return;
+      setState(() {
+        tb.isRead = true;
+      });
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => ThongBaoDetailScreen(thongBao: tb)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("THÔNG BÁO"),
-        centerTitle: true,
-        backgroundColor: const Color(0xFFD0F5DF),
+    super.build(context);
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFFD0F5DF),
+            Color(0xFFFFFFFF),
+            Color(0xFFFFFFFF),
+            Color(0xFFFFFFFF),
+          ],
+        ),
       ),
-      body: ListView.builder(
-        itemCount: dsThongBao.length,
-        itemBuilder: (context, index) {
-          final tb = dsThongBao[index];
-          return ThongBaoCardWidget(
-            thongBao: tb,
-            onTap: () => _moChiTiet(tb),
-          );
-        },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Center(
+                  child: Text(
+                    'Thông báo',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: dsThongBao.length,
+                  itemBuilder: (context, index) {
+                    final tb = dsThongBao[index];
+
+                    return GestureDetector(
+                      onTap: () => _moChiTiet(tb),
+                      child: ThongBaoCardWidget(
+                        title: tb.title ?? '',
+                        noiDung: tb.noiDung ?? '',
+                        ngayTao: tb.ngayTao,
+                        isRead: tb.isRead,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

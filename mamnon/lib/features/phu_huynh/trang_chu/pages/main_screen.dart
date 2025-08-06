@@ -11,9 +11,12 @@ import '../widgets/tim_kiem_widget.dart';
 import '../widgets/danh_sach_mon_hoc_widget.dart';
 
 class MainScreen extends StatefulWidget {
-  final Map userInfo;  // Nhận tham số userInfo
+  final Map userInfo; // Nhận tham số userInfo
 
-  const MainScreen({super.key, required this.userInfo});  // Truyền tham số vào constructor
+  const MainScreen({
+    super.key,
+    required this.userInfo,
+  }); // Truyền tham số vào constructor
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -31,10 +34,11 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     _pageController = PageController(initialPage: _selectedIndex);
 
+    String idPh = widget.userInfo['idPh'].toString().trim();
     // Khởi tạo _pages sau khi widget đã được khởi tạo
     _pages = [
-      TrangChuPhuHuynh(userInfo: widget.userInfo),  // Truyền userInfo đúng cách
-      ThongBaoScreen(),
+      TrangChuPhuHuynh(userInfo: widget.userInfo), // Truyền userInfo đúng cách
+      ThongBaoScreen(idPh: idPh),
       ChatbotScreen(),
       HoSoPhuHuynhScreen(userInfo: widget.userInfo),
     ];
@@ -53,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('User Info: ${widget.userInfo}');  // In ra userInfo để kiểm tra
+    print('User Info: ${widget.userInfo}'); // In ra userInfo để kiểm tra
     return Theme(
       data: ThemeData(
         scaffoldBackgroundColor: Colors.transparent,
@@ -81,7 +85,7 @@ class _MainScreenState extends State<MainScreen> {
                 _selectedIndex = index;
               });
             },
-            children: _pages,  // Truyền đúng _pages
+            children: _pages, // Truyền đúng _pages
           ),
           bottomNavigationBar: BottomNavigationWidget(
             currentIndex: _selectedIndex,
@@ -93,13 +97,14 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-
-
 class TrangChuPhuHuynh extends StatefulWidget {
-  final Map userInfo;  // Tham số userInfo
+  final Map userInfo; // Tham số userInfo
 
-  const TrangChuPhuHuynh({super.key, required this.userInfo});  // Nhận tham số vào constructor
-  
+  const TrangChuPhuHuynh({
+    super.key,
+    required this.userInfo,
+  }); // Nhận tham số vào constructor
+
   @override
   State<TrangChuPhuHuynh> createState() => _TrangChuPhuHuynhState();
 }
@@ -118,7 +123,11 @@ class _TrangChuPhuHuynhState extends State<TrangChuPhuHuynh> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HeaderWidget(name: widget.userInfo['hoTen']?.toString().trim() ?? 'Không có tên'),
+              HeaderWidget(
+                name:
+                    widget.userInfo['hoTen']?.toString().trim() ??
+                    'Không có tên',
+              ),
               const SizedBox(height: 20),
               const TimKiemWidget(),
               const SizedBox(height: 28),
