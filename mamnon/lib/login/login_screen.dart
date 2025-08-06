@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mamnon/features/giao_vien/pages/trang_chu.dart';
 import 'package:mamnon/features/phu_huynh/trang_chu/pages/main_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -21,17 +22,38 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Hàm gọi API để kiểm tra đăng nhập
   Future<Map?> login(String email, String password) async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:5005/api/PhuHuynhs'));
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:5005/api/PhuHuynhs'),
+    );
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      print(data); 
+      print(data);
       for (var user in data) {
-        if (user['email'].trim() == email.trim() && user['matKhau'].trim() == password.trim()) {
-          return user;  // Trả về thông tin người dùng khi đăng nhập thành công
+        if (user['email'].trim() == email.trim() &&
+            user['matKhau'].trim() == password.trim()) {
+          return user; // Trả về thông tin người dùng khi đăng nhập thành công
         }
       }
-      return null;  // Trả về null nếu không tìm thấy email hoặc mật khẩu không khớp
+      return null; // Trả về null nếu không tìm thấy email hoặc mật khẩu không khớp
+    } else {
+      throw Exception('Lỗi kết nối đến máy chủ');
+    }
+  }
+
+  Future<Map?> loginNhanVien(String email, String password) async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:5005/api/nhanviens'),
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      for (var nv in data) {
+        if (nv['email'].trim() == email && nv['matKhau'].trim() == password) {
+          return nv;
+        }
+      }
+      return null;
     } else {
       throw Exception('Lỗi kết nối đến máy chủ');
     }
@@ -187,9 +209,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 child: AnimatedAlign(
                                   duration: const Duration(milliseconds: 300),
-                                  alignment: _obscurePassword
-                                      ? Alignment.centerLeft
-                                      : Alignment.centerRight,
+                                  alignment:
+                                      _obscurePassword
+                                          ? Alignment.centerLeft
+                                          : Alignment.centerRight,
                                   child: Container(
                                     width: 16,
                                     height: 16,
@@ -214,7 +237,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Nút quên mật khẩu
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).push(_createRoute(const OtpScreen()));
+                            Navigator.of(
+                              context,
+                            ).push(_createRoute(const OtpScreen()));
                           },
                           child: const Text(
                             'Quên mật khẩu?',
@@ -235,19 +260,40 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 50,
                           child: ElevatedButton(
                             onPressed: () async {
-                              final email = _emailController.text;
-                              final password = _passwordController.text;
+                              final email = _emailController.text.trim();
+                              final password = _passwordController.text.trim();
 
-                              final user = await login(email, password);
+                              // Thử đăng nhập phụ huynh trước
+                              final userPh = await login(email, password);
 
-                              if (user != null) {
+                              if (userPh != null) {
+                                Navigator.of(context).push(
+                                  _createRoute(MainScreen(userInfo: userPh)),
+                                );
+                              } else {
+                                // Nếu không có trong phụ huynh, thử tìm trong nhân viên
+                                final userNv = await loginNhanVien(
+                                  email,
+                                  password,
+                                );
+
+                                if (userNv != null) {
                                   Navigator.of(context).push(
-                                    _createRoute(MainScreen(userInfo: user)),  // Truyền userInfo vào MainScreen
+                                    _createRoute(
+                                      TrangChu(
+                                        maSt: userNv['maSt'].trim(),
+                                      ), // ✅ trim() để bỏ khoảng trắng thừa
+                                    ),
                                   );
                                 } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Email hoặc mật khẩu không đúng')),
-                                );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Email hoặc mật khẩu không đúng',
+                                      ),
+                                    ),
+                                  );
+                                }
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -290,7 +336,10 @@ class _LoginScreenState extends State<LoginScreen> {
         const end = Offset.zero;
         const curve = Curves.easeInOut;
 
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(CurveTween(curve: curve));
         return SlideTransition(position: animation.drive(tween), child: child);
       },
     );
