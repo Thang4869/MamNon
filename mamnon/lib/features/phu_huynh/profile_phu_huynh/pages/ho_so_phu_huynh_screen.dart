@@ -8,13 +8,17 @@ import 'package:mamnon/features/phu_huynh/settings/language_setting.dart';
 import 'package:mamnon/features/phu_huynh/settings/notify_setting.dart';
 import 'package:mamnon/features/phu_huynh/settings/pass_security_setting.dart';
 import 'package:mamnon/features/phu_huynh/settings/theme_setting.dart';
+import 'package:mamnon/features/phu_huynh/support/report_issue_screen.dart';
+import 'package:mamnon/features/phu_huynh/support/support_mailbox_screen.dart';
 
 import '../widgets/profile_header.dart';
 import '../widgets/profile_form.dart';
 import '../widgets/child_card.dart';
 
 class HoSoPhuHuynhScreen extends StatefulWidget {
-  const HoSoPhuHuynhScreen({super.key});
+  final Map userInfo; 
+
+  const HoSoPhuHuynhScreen({super.key, required this.userInfo});
 
   @override
   _HoSoPhuHuynhScreenState createState() => _HoSoPhuHuynhScreenState();
@@ -57,17 +61,19 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
   }
 
   Future<void> _loadProfile() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+  await Future.delayed(const Duration(milliseconds: 500));
 
-    final children = await _loadChildrenFromJson();
+  print("User info nhận được: ${widget.userInfo}");
 
-    setState(() {
-      _emailCtrl.text = 'phuhuynh@gmail.com';
-      _phoneCtrl.text = '+84 1234 5678';
-      _children.addAll(children);
-      _loading = false;
-    });
-  }
+  final children = await _loadChildrenFromJson();
+
+  setState(() {
+  _emailCtrl.text = widget.userInfo['email']?.toString().trim() ?? '';
+  _phoneCtrl.text = widget.userInfo['sdt']?.toString().trim() ?? '';
+  _children.addAll(children);
+  _loading = false;
+});
+}
 
   Future<List<Child>> _loadChildrenFromJson() async {
     final jsonString = await rootBundle.loadString('assets/data/child.json');
@@ -112,7 +118,7 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
                       // Header
                       ProfileHeader(
                         avatarFile: _avatarFile,
-                        name: 'Nguyễn Văn Thắng',
+                        name: widget.userInfo['hoTen'] ?? '',
                         email: _emailCtrl.text,
                         onEdit: _toggleEdit,
                         onAvatarTap: _pickAvatar,
@@ -172,28 +178,50 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
                             ),
                             const Divider(height: 1),
                             // Trợ giúp & hỗ trợ expandable
-                            ExpansionTile(
-                              leading: const Icon(Icons.support_agent),
-                              title: const Text('Trợ giúp & hỗ trợ'),
-                              children: [
-                                ListTile(
-                                  title: const Text('Trung tâm trợ giúp'),
-                                  onTap: () {},
-                                ),
-                                ListTile(
-                                  title: const Text('Hộp thư hỗ trợ'),
-                                  onTap: () {},
-                                ),
-                                ListTile(
+                           ExpansionTile(
+                            leading: const Icon(Icons.support_agent),
+                            title: const Text('Trợ giúp & hỗ trợ'),
+                            children: [
+                              ListTile(
+                                title: const Text('Trung tâm trợ giúp'),
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/help_center');
+                                },
+                              ),
+                              ListTile(
+                                title: const Text('Hộp thư hỗ trợ'),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => SupportMailboxScreen(
+                                        idPH: widget.userInfo['idPH'] ?? '',
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              ListTile(
                                   title: const Text('Báo cáo sự cố'),
-                                  onTap: () {},
-                                ),
-                                ListTile(
-                                  title: const Text('Điều khoản & chính sách'),
-                                  onTap: () {},
-                                ),
-                              ],
-                            ),
+                                  onTap: () {
+                                    Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => ReportIssueScreen(
+                                        idPH: widget.userInfo['idPH'] ?? '',
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              ListTile(
+                                title: const Text('Điều khoản & chính sách'),
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/terms_policy');
+                                },
+                              ),
+                            ],
+                          ),
                             const Divider(height: 1),
                             // Cài đặt expandable
                             ExpansionTile(

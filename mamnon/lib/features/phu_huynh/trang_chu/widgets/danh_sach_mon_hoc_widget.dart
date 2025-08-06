@@ -7,10 +7,10 @@ class DanhSachMonHocWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subjects = [
-      {'name': 'Tiếng việt', 'image': 'icons/TiengViet.png', 'type': 'asset'},
-      {'name': 'Âm nhạc', 'image': 'icons/AmNhac.png', 'type': 'asset'},
-      {'name': 'Sức khỏe', 'image': 'icons/SucKhoe.png', 'type': 'asset'},
-      {'name': 'Hình Học', 'image': 'icons/HinhHoc.png', 'type': 'asset'},
+      {'name': 'Tiếng việt', 'image': 'assets/icons/TiengViet.png', 'type': 'asset'},
+      {'name': 'Âm nhạc', 'image': 'assets/icons/AmNhac.png', 'type': 'asset'},
+      {'name': 'Sức khỏe', 'image': 'assets/icons/SucKhoe.png', 'type': 'asset'},
+      {'name': 'Hình Học', 'image': 'assets/icons/HinhHoc.png', 'type': 'asset'},
     ];
 
     final displaySubjects = showAll ? subjects : subjects.take(2).toList();
