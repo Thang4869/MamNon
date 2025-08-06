@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:mamnon/features/giao_vien/pages/diem_danh.dart';
+import 'package:mamnon/features/giao_vien/pages/ho_so_giao_vien.dart';
 import 'package:mamnon/features/giao_vien/pages/ngoai_khoa.dart';
 import 'package:mamnon/features/giao_vien/widgets/bottom_navigation.dart';
 
 class TrangChu extends StatelessWidget {
-  final String maSt; // <- lấy từ login
+  final Map userInfo; 
 
-  const TrangChu({super.key, required this.maSt});
+  const TrangChu({super.key, required this.userInfo});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: TrangGiaoVien(maSt: maSt),
+      home: TrangGiaoVien(userInfo: userInfo),
     );
   }
 }
 
 class TrangGiaoVien extends StatefulWidget {
-  final String maSt;
-
-  const TrangGiaoVien({super.key, required this.maSt});
+  final Map userInfo;
+  const TrangGiaoVien({super.key, required this.userInfo});
 
   @override
   State<TrangGiaoVien> createState() => _TrangGiaoVienState();
@@ -28,24 +28,20 @@ class TrangGiaoVien extends StatefulWidget {
 
 class _TrangGiaoVienState extends State<TrangGiaoVien> {
   int _selectedIndex = 0;
-
   late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
+    final maSt = widget.userInfo['maSt'] ?? '';
     _pages = [
-      DiemDanh(maSt: widget.maSt),
-      NgoaiKhoa(maSt: widget.maSt),
-      //HoSo(maSt: widget.maSt),
+      DiemDanh(maSt: maSt),
+      NgoaiKhoa(maSt: maSt),
+      HoSoGiaoVienScreen(userInfo: widget.userInfo),
     ];
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  void _onItemTapped(int index) => setState(() => _selectedIndex = index);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +54,7 @@ class _TrangGiaoVienState extends State<TrangGiaoVien> {
             end: Alignment.bottomCenter,
             colors: [
               Color(0xFFD0F5DF),
-              Color(0xFFD0F5DF),
+              Color(0xFFFFFFFF),
               Color(0xFFFFFFFF),
               Color(0xFFFFFFFF),
             ],

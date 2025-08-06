@@ -280,9 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 if (userNv != null) {
                                   Navigator.of(context).push(
                                     _createRoute(
-                                      TrangChu(
-                                        maSt: userNv['maSt'].trim(),
-                                      ), // ✅ trim() để bỏ khoảng trắng thừa
+                                      TrangChu(userInfo: userNv), // Truyền nguyên Map userNv
                                     ),
                                   );
                                 } else {
