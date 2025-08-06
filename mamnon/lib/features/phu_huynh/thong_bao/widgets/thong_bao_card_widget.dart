@@ -1,61 +1,66 @@
 import 'package:flutter/material.dart';
-import '../models/thong_bao_model.dart';
+import 'package:intl/intl.dart';
 
 class ThongBaoCardWidget extends StatelessWidget {
-  final ThongBaoModel thongBao;
-  final VoidCallback onTap;
+  final String title;
+  final String noiDung;
+  final DateTime ngayTao;
+  final bool isRead;
 
-  const ThongBaoCardWidget({super.key, required this.thongBao, required this.onTap});
+  const ThongBaoCardWidget({
+    super.key,
+    required this.title,
+    required this.noiDung,
+    required this.ngayTao,
+    required this.isRead,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Stack(
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: thongBao.isRead ? Colors.white : const Color(0xFFF0FFF5),
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
-            ),
-            child: Row(
+    final dateFormatted = DateFormat('dd/MM/yyyy – HH:mm').format(ngayTao);
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      elevation: isRead ? 1 : 4,
+      color: isRead ? Colors.white : const Color(0xFFFFF4E5),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Icon(_getIcon(thongBao), size: 28, color: Colors.black),
-                const SizedBox(width: 16),
+                const Icon(Icons.notifications_none, color: Colors.orange),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(thongBao.title, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 4),
-                      const Text('Nội dung thông báo', style: TextStyle(color: Colors.grey)),
-                    ],
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
+                    ),
                   ),
                 ),
-                Text(thongBao.date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
               ],
             ),
-          ),
-          if (!thongBao.isRead)
-            Positioned(
-              left: 8,
-              top: 8,
-              child: Container(
-                width: 10,
-                height: 10,
-                decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+            const SizedBox(height: 8),
+            Text(
+              noiDung,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                dateFormatted,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
-            )
-        ],
+            ),
+          ],
+        ),
       ),
     );
-  }
-
-  IconData _getIcon(ThongBaoModel tb) {
-    if (tb.isPinned) return Icons.check_circle_outline;
-    return Icons.notifications_none;
   }
 }
