@@ -40,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
       TrangChuPhuHuynh(userInfo: widget.userInfo), // Truyền userInfo đúng cách
       ThongBaoScreen(idPh: idPh),
       ChatbotScreen(),
-      HoSoPhuHuynhScreen(),
+      HoSoPhuHuynhScreen(userInfo: widget.userInfo),
     ];
   }
 

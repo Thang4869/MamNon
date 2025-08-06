@@ -13,9 +13,9 @@ class _NotificationSliderWidgetState extends State<NotificationSliderWidget> {
   int _currentPage = 0;
 
   final List<String> images = [
-    'images/notification1.png',
-    'images/notification2.png',
-    'images/notification3.png',
+    'assets/images/notification1.png',
+    'assets/images/notification2.png',
+    'assets/images/notification3.png',
   ];
 
   @override

@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Hàm gọi API để kiểm tra đăng nhập
   Future<Map?> login(String email, String password) async {
-    final response = await http.get(Uri.parse('http://localhost:5005/api/PhuHuynhs'));
+    final response = await http.get(Uri.parse('http://10.0.2.2:5005/api/PhuHuynhs'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
