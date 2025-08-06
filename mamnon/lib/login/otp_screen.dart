@@ -52,7 +52,7 @@ class _OtpScreenState extends State<OtpScreen> {
     }
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:5005/api/ForgetPassApi/send-otp'),
+      Uri.parse('http://10.0.2.2:5005/api/ForgetPassApi/verify-otp'),
       //'http://192.168.68.140:5005/api/ForgetPassApi/send-otp'
       //'http://10.0.2.2:5005/api/ForgetPassApi/send-otp'
       //'http://localhost:5005/api/ForgetPassApi/send-otp'

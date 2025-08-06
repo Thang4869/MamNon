@@ -10,13 +10,14 @@ import 'package:mamnon/features/phu_huynh/settings/pass_security_setting.dart';
 import 'package:mamnon/features/phu_huynh/settings/theme_setting.dart';
 import 'package:mamnon/features/phu_huynh/support/report_issue_screen.dart';
 import 'package:mamnon/features/phu_huynh/support/support_mailbox_screen.dart';
+import 'package:mamnon/login/login_screen.dart';
 
 import '../widgets/profile_header.dart';
 import '../widgets/profile_form.dart';
 import '../widgets/child_card.dart';
 
 class HoSoPhuHuynhScreen extends StatefulWidget {
-  final Map userInfo; 
+  final Map userInfo;
 
   const HoSoPhuHuynhScreen({super.key, required this.userInfo});
 
@@ -61,19 +62,19 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
   }
 
   Future<void> _loadProfile() async {
-  await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 500));
 
-  print("User info nhận được: ${widget.userInfo}");
+    print("User info nhận được: ${widget.userInfo}");
 
-  final children = await _loadChildrenFromJson();
+    final children = await _loadChildrenFromJson();
 
-  setState(() {
-  _emailCtrl.text = widget.userInfo['email']?.toString().trim() ?? '';
-  _phoneCtrl.text = widget.userInfo['sdt']?.toString().trim() ?? '';
-  _children.addAll(children);
-  _loading = false;
-});
-}
+    setState(() {
+      _emailCtrl.text = widget.userInfo['email']?.toString().trim() ?? '';
+      _phoneCtrl.text = widget.userInfo['sdt']?.toString().trim() ?? '';
+      _children.addAll(children);
+      _loading = false;
+    });
+  }
 
   Future<List<Child>> _loadChildrenFromJson() async {
     final jsonString = await rootBundle.loadString('assets/data/child.json');
@@ -178,50 +179,60 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
                             ),
                             const Divider(height: 1),
                             // Trợ giúp & hỗ trợ expandable
-                           ExpansionTile(
-                            leading: const Icon(Icons.support_agent),
-                            title: const Text('Trợ giúp & hỗ trợ'),
-                            children: [
-                              ListTile(
-                                title: const Text('Trung tâm trợ giúp'),
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/help_center');
-                                },
-                              ),
-                              ListTile(
-                                title: const Text('Hộp thư hỗ trợ'),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => SupportMailboxScreen(
-                                        idPH: widget.userInfo['idPH'] ?? '',
+                            ExpansionTile(
+                              leading: const Icon(Icons.support_agent),
+                              title: const Text('Trợ giúp & hỗ trợ'),
+                              children: [
+                                ListTile(
+                                  title: const Text('Trung tâm trợ giúp'),
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/help_center',
+                                    );
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Text('Hộp thư hỗ trợ'),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => SupportMailboxScreen(
+                                              idPH:
+                                                  widget.userInfo['idPH'] ?? '',
+                                            ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              ListTile(
+                                    );
+                                  },
+                                ),
+                                ListTile(
                                   title: const Text('Báo cáo sự cố'),
                                   onTap: () {
                                     Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => ReportIssueScreen(
-                                        idPH: widget.userInfo['idPH'] ?? '',
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => ReportIssueScreen(
+                                              idPH:
+                                                  widget.userInfo['idPH'] ?? '',
+                                            ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              ListTile(
-                                title: const Text('Điều khoản & chính sách'),
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/terms_policy');
-                                },
-                              ),
-                            ],
-                          ),
+                                    );
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Text('Điều khoản & chính sách'),
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/terms_policy',
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                             const Divider(height: 1),
                             // Cài đặt expandable
                             ExpansionTile(
@@ -294,7 +305,48 @@ class _HoSoPhuHuynhScreenState extends State<HoSoPhuHuynhScreen>
                                 style: TextStyle(color: Colors.red),
                               ),
                               onTap: () {
-                                // TODO: Handle logout
+                                showDialog(
+                                  context: context,
+                                  builder:
+                                      (context) => AlertDialog(
+                                        title: const Text('Xác nhận'),
+                                        content: const Text(
+                                          'Bạn có chắc chắn muốn đăng xuất?',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed:
+                                                () =>
+                                                    Navigator.of(context).pop(),
+                                            child: const Text('Huỷ'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              // Đóng dialog
+                                              Navigator.of(context).pop();
+
+                                              // Quay về màn hình đăng nhập và xoá stack các màn hình trước đó
+                                              Navigator.of(
+                                                context,
+                                              ).pushAndRemoveUntil(
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (context) =>
+                                                          const LoginScreen(),
+                                                ),
+                                                (route) => false,
+                                              );
+                                            },
+                                            child: const Text(
+                                              'Đăng xuất',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                );
                               },
                             ),
                           ],
